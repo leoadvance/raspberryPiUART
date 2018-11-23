@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"aliosStudio.sdkPath": "/Users/LEO/.aos/AliOS-Things",
+		"python.pythonPath": "/Users/LEO/.virtualenvs/raspberryPiPython/bin/python3"
+	}
+}
