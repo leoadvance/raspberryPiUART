@@ -3,68 +3,94 @@
 import getopt
 import sys
 import os
-print("start get UART log!")
+
 
 # UART 设备路径
 DEVICE_PATH = "/dev" 
 DEVICE_UART_KEY_WORD = "tty"
+
+class UartClass:
+    def __init__(self):
+        # 赋值默认名称和波特率
+        self.bitrate = 115200
+        self.device_name = "no_device"
+        self.device_path = "null"
+
+
 #  系统参数
 sysPara = []
 
-# 默认参数 波特率 端口号
-UARTbitrate = 115200
-UARTport = "ttyUSB0"
 
 # 打印所有入口参数
 argv = sys.argv[1:]
-print("argv:", argv)
+#print("argv:", argv)
 
 def usage():
     print("-p   UART Port number")
     print("-b   UART bitrate Default value is 115200")
 
-#   匹配文件并返回路径
+#   匹配文件并返回路径 path 待比较路径 name 设备名 
+#   函数返回设备类路径和设备名
 def findfile(path, name):
     # 遍历目录
     for relpath, dirs, files in os.walk(path): 
-
-        for filename in files:
-
+        for device_name in files:
             # 文件名包含name 且包含 UART关键字
-            if (filename.find(name) != -1) and (filename.find(DEVICE_UART_KEY_WORD) != -1):
-                full_path = os.path.join(path, relpath, filename)
-                portPath = os.path.normpath(os.path.abspath(full_path))
+            if (device_name.find(name) != -1) and (device_name.find(DEVICE_UART_KEY_WORD) != -1):
+                full_path = os.path.join(path, relpath, device_name)
+                device_path = os.path.normpath(os.path.abspath(full_path))
                 #print(portPath)
-                return portPath
+                return device_path, device_name
 
-        print("Can't find UART! err!")
+        print("Can't find uart device! err!")
         sys.exit(1) 
 # 获取系统参数并解析
 def getSysPara():
+    # 声明临时实例
+    _uart_tmp = UartClass();
     try:
         # 获取参数 带:表明必须带参数 如p: -p xx
         Para, args = getopt.getopt(argv, "hp:b:", ["help"])
-        print('Para   :', Para)
+        # print('Para   :', Para)
         for o, a in Para:
             if o in ("-h", "--help"):
                 usage()
                 sys.exit(0)
             # 提取波特率    
             if o in ("-b"):
-                UARTbitrate = a
-                print("bitrate: ", UARTbitrate)
+                _uart_tmp.bitrate = a
+                #print("uart bitrate: ", _uart_tmp.bitrate)
 
             # 提取端口号
             if o in ("-p"):
                 #  for name in os.listdir("/dev"):
                 #     print(name)
-                UARTport = findfile(DEVICE_PATH, a)
-                print("UARTportPath: ", UARTport)
+                _uart_tmp.device_path, _uart_tmp.device_name = findfile(DEVICE_PATH, a)
+                #print("uart device path: ", _uart_tmp.device_name)
+        if _uart_tmp.device_name == "no_device":
+            print("Serial port not configured！")
+            sys.exit("uart cfg err!")
+
+        return (_uart_tmp)
 
     except getopt.GetoptError as err:
         print('ERROR:', err)
         sys.exit(1)
 
-getSysPara()
+# 主函数
+def main():
+    # 声明实例
+    _uart = UartClass()
+    #print(_uart.device_name)
+    _uart = getSysPara()
+    print("start get UART log!")
+    print("uart bitrate: ", _uart.bitrate)
+    print("uart device path: ", _uart.device_path)
+    print("uart device name: ", _uart.device_name)
+
+if __name__ == '__main__':
+    main()
+    
+
 
 
