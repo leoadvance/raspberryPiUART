@@ -32,7 +32,7 @@ def usage():
 
 #   匹配文件并返回路径 path 待比较路径 name 设备名 
 #   函数返回设备类路径和设备名
-def findfile(path, name):
+def findfile(path:dict(type = str, help = "路径名称"), name:str):
     # 遍历目录
     for relpath, dirs, files in os.walk(path): 
         for device_name in files:
@@ -67,6 +67,7 @@ def getSysPara():
                 #  for name in os.listdir("/dev"):
                 #     print(name)
                 _uart_tmp.device_path, _uart_tmp.device_name = findfile(DEVICE_PATH, a)
+                print(findfile.__annotations__)
                 #print("uart device path: ", _uart_tmp.device_name)
         # 未配置设备时停止程序        
         if _uart_tmp.device_name == "no_device":
