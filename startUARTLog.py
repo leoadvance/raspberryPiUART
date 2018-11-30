@@ -48,6 +48,7 @@ def findfile(path:dict(type = str, help = "路径名称"), name:str):
 
         print("Can't find uart device! err!")
         sys.exit(1) 
+        
 # 获取系统参数并解析
 def getSysPara():
     # 声明临时实例
@@ -126,7 +127,9 @@ def main():
         #if (read_data.decode('gb2312') != "\n"):
         log_date = time.strftime("%Y-%m-%d,", time.localtime())
         log_time = time.strftime("%H:%M:%S,", time.localtime())
-        print("read_data: " + read_data.decode('gb2312') + " " + log_date + log_time)
+        print("read_data: " + read_data.decode('gb2312') + log_date + log_time)
+
+        # 以GB2312编码方式记录log到csv
         log_file.writelines(log_date + log_time + read_data.decode("gb2312"))
         log_file.flush()
     
