@@ -5,6 +5,7 @@ import sys
 import os
 # 时间
 import time
+import serial
 
 
 # UART 设备路径
@@ -84,6 +85,11 @@ def getSysPara():
         print('ERROR:', err)
         sys.exit(1)
 
+# 打开串口
+def open_UART(uart_para:UartClass()):
+    uart_handle = serial.Serial(port = uart_para.device_path, baudrate = uart_para.bitrate)
+    return(uart_handle)
+
 # 创建log文件 
 def log_file_create(uart_para:UartClass()):
     # 判断目录是否存在
@@ -108,8 +114,21 @@ def main():
     print("uart bitrate: ", _uart.bitrate)
     print("uart device path: ", _uart.device_path)
     print("uart device name: ", _uart.device_name)
-    log_file = log_file_create(_uart)
 
+    # 打开log文件和串口
+    log_file = log_file_create(_uart)
+    uart_handle = open_UART(_uart)
+
+    while(1):
+        # 等待接收一行数据
+        read_data = uart_handle.readline()
+        # if ((read_data.decode('gb2312') != "\n") or (read_data.decode('gb2312') != "\r")):
+        #if (read_data.decode('gb2312') != "\n"):
+        log_date = time.strftime("%Y-%m-%d,", time.localtime())
+        log_time = time.strftime("%H:%M:%S,", time.localtime())
+        print("read_data: " + read_data.decode('gb2312') + " " + log_date + log_time)
+        log_file.writelines(log_date + log_time + read_data.decode("gb2312"))
+        log_file.flush()
     
 
 if __name__ == '__main__':
