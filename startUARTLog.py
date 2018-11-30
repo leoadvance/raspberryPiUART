@@ -8,6 +8,7 @@ import os
 # UART 设备路径
 DEVICE_PATH = "/dev" 
 DEVICE_UART_KEY_WORD = "tty"
+DIR_NAME = "./UART_Log"
 
 class UartClass:
     def __init__(self):
@@ -67,6 +68,7 @@ def getSysPara():
                 #     print(name)
                 _uart_tmp.device_path, _uart_tmp.device_name = findfile(DEVICE_PATH, a)
                 #print("uart device path: ", _uart_tmp.device_name)
+        # 未配置设备时停止程序        
         if _uart_tmp.device_name == "no_device":
             print("Serial port not configured！")
             sys.exit("uart cfg err!")
@@ -77,16 +79,30 @@ def getSysPara():
         print('ERROR:', err)
         sys.exit(1)
 
+# 创建log文件
+def log_file_create(uart_para:UartClass()):
+    # 判断目录是否存在
+    if os.path.isdir(DIR_NAME) == False:
+        os.mkdir(DIR_NAME)
+        print("目录不存在，创建目录:" + DIR_NAME)
+
+    # 新建logfile
+
 # 主函数
 def main():
     # 声明实例
     _uart = UartClass()
     #print(_uart.device_name)
+
+    # 解析串口波特率以及设备名
     _uart = getSysPara()
     print("start get UART log!")
     print("uart bitrate: ", _uart.bitrate)
     print("uart device path: ", _uart.device_path)
     print("uart device name: ", _uart.device_name)
+    log_file_create(_uart)
+
+    
 
 if __name__ == '__main__':
     main()
