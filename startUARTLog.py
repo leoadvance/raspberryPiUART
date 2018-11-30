@@ -3,6 +3,8 @@
 import getopt
 import sys
 import os
+# 时间
+import time
 
 
 # UART 设备路径
@@ -67,7 +69,9 @@ def getSysPara():
                 #  for name in os.listdir("/dev"):
                 #     print(name)
                 _uart_tmp.device_path, _uart_tmp.device_name = findfile(DEVICE_PATH, a)
-                print(findfile.__annotations__)
+
+                # 显示函数参数类型
+                #print(findfile.__annotations__)
                 #print("uart device path: ", _uart_tmp.device_name)
         # 未配置设备时停止程序        
         if _uart_tmp.device_name == "no_device":
@@ -80,14 +84,17 @@ def getSysPara():
         print('ERROR:', err)
         sys.exit(1)
 
-# 创建log文件
+# 创建log文件 
 def log_file_create(uart_para:UartClass()):
     # 判断目录是否存在
     if os.path.isdir(DIR_NAME) == False:
         os.mkdir(DIR_NAME)
         print("目录不存在，创建目录:" + DIR_NAME)
 
-    # 新建logfile
+    # 新建logfile 串口名+创建时间
+    time_str = time.strftime("_%Y-%m-%d_%Hh%Mm%Ss", time.localtime())
+    #print(time_str)
+    return(open(DIR_NAME + "/" + uart_para.device_name + time_str + ".csv", "w"))
 
 # 主函数
 def main():
@@ -101,7 +108,7 @@ def main():
     print("uart bitrate: ", _uart.bitrate)
     print("uart device path: ", _uart.device_path)
     print("uart device name: ", _uart.device_name)
-    log_file_create(_uart)
+    log_file = log_file_create(_uart)
 
     
 
