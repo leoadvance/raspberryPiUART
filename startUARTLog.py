@@ -113,9 +113,10 @@ def main():
     # 解析串口波特率以及设备名
     _uart = getSysPara()
     print("start get UART log!")
+    print("The directory to save the log is \"./UART_Log\"!")
     print("uart bitrate: ", _uart.bitrate)
     print("uart device path: ", _uart.device_path)
-    print("uart device name: ", _uart.device_name)
+    #print("uart device name: ", _uart.device_name)
 
     # 打开log文件和串口
     log_file = log_file_create(_uart)
