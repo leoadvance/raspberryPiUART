@@ -6,6 +6,7 @@ import os
 # 时间
 import time
 import serial
+from datetime import datetime
 
 
 # UART 设备路径
@@ -99,7 +100,7 @@ def log_file_create(uart_para:UartClass()):
         print("目录不存在，创建目录:" + DIR_NAME)
 
     # 新建logfile 串口名+创建时间
-    time_str = time.strftime("_%Y-%m-%d_%Hh%Mm%Ss", time.localtime())
+    time_str = datetime.now().strftime("_%Y-%m-%d_%Hh%Mm%Ss")
     #print(time_str)
     return(open(DIR_NAME + "/" + uart_para.device_name + time_str + ".csv", "w"))
 
@@ -108,7 +109,7 @@ def main():
     # 声明实例
     _uart = UartClass()
     #print(_uart.device_name)
-
+    #print(datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
     # 解析串口波特率以及设备名
     _uart = getSysPara()
     print("start get UART log!")
@@ -125,8 +126,8 @@ def main():
         read_data = uart_handle.readline()
         # if ((read_data.decode('gb2312') != "\n") or (read_data.decode('gb2312') != "\r")):
         #if (read_data.decode('gb2312') != "\n"):
-        log_date = time.strftime("%Y-%m-%d,", time.localtime())
-        log_time = time.strftime("%H:%M:%S,", time.localtime())
+        log_date = datetime.now().strftime("%Y-%m-%d,")
+        log_time = datetime.now().strftime("%H:%M:%S.%f")[:-3] + ","
         print("read_data: " + read_data.decode('gb2312') + log_date + log_time)
 
         # 以GB2312编码方式记录log到csv
